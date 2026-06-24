@@ -7,11 +7,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root{
-    --navy:#16223a; --navy2:#1f3050; --ink:#0e1626;
-    --gold:#c9933d; --gold2:#e3b25a;
-    --bg:#f4f6f9; --card:#ffffff; --line:#e3e8ef;
-    --muted:#67748a; --text:#1c2638; --good:#1f9d63; --good-bg:#e7f6ee;
-    --shadow:0 10px 30px rgba(16,30,52,.10);
+    --navy:#171717; --navy2:#2e2e2e; --ink:#000000;
+    --gold:#c8102e; --gold2:#e11d36;
+    --bg:#f6f6f7; --card:#ffffff; --line:#e6e6e8;
+    --muted:#6b6b72; --text:#1a1a1a; --good:#c8102e; --good-bg:#fbe7ea;
+    --shadow:0 10px 30px rgba(0,0,0,.10);
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
@@ -36,7 +36,7 @@
   label.fl .req{color:#c0392b}
   input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
     width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;color:var(--text);transition:border .15s,box-shadow .15s}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,147,61,.18)}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,16,46,.18)}
   textarea{min-height:80px;resize:vertical}
   .hint{font-size:12px;color:var(--muted);margin-top:5px}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:13px 22px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .08s,box-shadow .15s,background .15s;font-family:inherit}
@@ -456,7 +456,7 @@ function initSig(canvas){
   const ratio=window.devicePixelRatio||1; const rect=canvas.getBoundingClientRect();
   const cssW=rect.width||(canvas.parentElement&&canvas.parentElement.clientWidth)||500;
   canvas.width=cssW*ratio; canvas.height=150*ratio;
-  const ctx=canvas.getContext('2d'); ctx.scale(ratio,ratio); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.strokeStyle='#16223a';
+  const ctx=canvas.getContext('2d'); ctx.scale(ratio,ratio); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.strokeStyle='#171717';
   let drawing=false,last=null,dirty=false;
   const dv=canvas.getAttribute('data-val');
   if(dv){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,cssW,150); img.src=decodeURIComponent(dv); dirty=true; hidePh(canvas); }
@@ -522,11 +522,11 @@ function fileToB64(file){ return new Promise((res,rej)=>{ const r=new FileReader
 
 function buildPdf(doc,data){
   const {jsPDF}=window.jspdf; const pdf=new jsPDF({unit:'pt',format:'letter'}); const W=612,M=54; let y=64;
-  pdf.setFillColor(22,34,58); pdf.rect(0,0,W,46,'F');
-  pdf.setTextColor(227,178,90); pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text('TOP DRAWER CABINETRY',M,28);
+  pdf.setFillColor(20,20,20); pdf.rect(0,0,W,46,'F');
+  pdf.setTextColor(200,16,46); pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text('TOP DRAWER CABINETRY',M,28);
   pdf.setTextColor(255,255,255); pdf.setFont('helvetica','normal'); pdf.setFontSize(9); pdf.text('New Hire Onboarding',W-M,28,{align:'right'});
   pdf.setTextColor(28,38,56); pdf.setFont('helvetica','bold'); pdf.setFontSize(16); pdf.text(doc.name,M,y); y+=8;
-  pdf.setDrawColor(201,147,61); pdf.setLineWidth(1.5); pdf.line(M,y,W-M,y); y+=24;
+  pdf.setDrawColor(200,16,46); pdf.setLineWidth(1.5); pdf.line(M,y,W-M,y); y+=24;
   pdf.setFontSize(10); pdf.setTextColor(90,100,118); pdf.setFont('helvetica','normal');
   pdf.text('Employee: '+state.first+' '+state.last+'    Email: '+state.email,M,y); y+=14;
   pdf.text('Submitted: '+new Date().toLocaleString(),M,y); y+=22;
