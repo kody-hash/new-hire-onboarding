@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>New Hire Onboarding — Top Drawer Cabinetry</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#16223a; --navy2:#1f3050; --ink:#0e1626;
+    --gold:#c9933d; --gold2:#e3b25a;
+    --bg:#f4f6f9; --card:#ffffff; --line:#e3e8ef;
+    --muted:#67748a; --text:#1c2638; --good:#1f9d63; --good-bg:#e7f6ee;
+    --shadow:0 10px 30px rgba(16,30,52,.10);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  header.top{background:var(--navy);color:#fff}
+  header.top .wrap{display:flex;align-items:center;gap:14px;padding:18px 20px}
+  .logo{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.3px}
+  .logo .mark{width:38px;height:38px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;color:var(--ink);font-weight:800;font-size:18px}
+  .logo small{display:block;font-weight:400;color:#aab6c9;font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+  header.top .spacer{flex:1}
+  header.top .who{font-size:13px;color:#cdd6e4;text-align:right}
+  header.top .who b{color:#fff;display:block}
+  .screen{display:none;padding:42px 0 70px}
+  .screen.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  h1{font-size:30px;margin:0 0 8px;letter-spacing:-.4px}
+  h2{font-size:21px;margin:0 0 4px}
+  .lead{color:var(--muted);font-size:16px;margin:0 0 28px;max-width:640px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .field{margin-bottom:16px}
+  label.fl{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:6px}
+  label.fl .req{color:#c0392b}
+  input[type=text],input[type=email],input[type=tel],input[type=date],input[type=number],select,textarea{
+    width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:9px;font-size:15px;font-family:inherit;background:#fff;color:var(--text);transition:border .15s,box-shadow .15s}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,147,61,.18)}
+  textarea{min-height:80px;resize:vertical}
+  .hint{font-size:12px;color:var(--muted);margin-top:5px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:10px;padding:13px 22px;font-size:15px;font-weight:600;cursor:pointer;transition:transform .08s,box-shadow .15s,background .15s;font-family:inherit}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--navy);color:#fff}.btn-primary:hover{background:var(--navy2)}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--ink)}.btn-gold:hover{filter:brightness(1.04)}
+  .btn-ghost{background:#eef1f6;color:var(--text)}.btn-ghost:hover{background:#e4e9f1}
+  .btn-link{background:none;color:var(--navy);padding:8px 4px;font-weight:600}
+  .btn[disabled]{opacity:.5;cursor:not-allowed}
+  .roles{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:10px}
+  .role{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:28px;cursor:pointer;transition:border .15s,transform .12s,box-shadow .15s;box-shadow:var(--shadow)}
+  .role:hover{border-color:var(--gold);transform:translateY(-3px)}
+  .role .ico{width:52px;height:52px;border-radius:12px;background:var(--navy);color:var(--gold2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;margin-bottom:16px}
+  .role h2{margin-bottom:6px}.role p{color:var(--muted);font-size:14px;margin:0 0 16px;min-height:40px}
+  .role .go{color:var(--navy);font-weight:700;font-size:14px}
+  @media(max-width:680px){.roles{grid-template-columns:1fr}}
+  .pbadge{font-size:13px;color:var(--muted)}.pbadge b{color:var(--text)}
+  .bar{height:12px;background:#e7ecf3;border-radius:99px;overflow:hidden;margin:14px 0 30px}
+  .bar > i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--good));border-radius:99px;transition:width .5s ease}
+  .doc{display:flex;align-items:center;gap:16px;padding:18px 20px;border-bottom:1px solid var(--line)}
+  .doc:last-child{border-bottom:none}
+  .doc .status{width:30px;height:30px;border-radius:50%;flex:none;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;border:2px solid var(--line);color:var(--muted);background:#fff}
+  .doc.done .status{background:var(--good-bg);border-color:var(--good);color:var(--good)}
+  .doc .meta{flex:1;min-width:0}
+  .doc .meta h3{margin:0;font-size:16px;display:flex;align-items:center;flex-wrap:wrap}
+  .doc .meta p{margin:3px 0 0;font-size:13px;color:var(--muted)}
+  .doc .tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);background:#eef1f6;padding:3px 8px;border-radius:6px;margin-left:8px}
+  .doc.done .tag{color:var(--good);background:var(--good-bg)}
+  .doc .actions{display:flex;gap:8px;flex:none}
+  @media(max-width:680px){.doc{flex-wrap:wrap}.doc .actions{width:100%}.doc .actions .btn{flex:1}}
+  .modal-bg{position:fixed;inset:0;background:rgba(14,22,38,.55);display:none;align-items:flex-start;justify-content:center;padding:30px 16px;overflow:auto;z-index:50}
+  .modal-bg.open{display:flex}
+  .modal{background:#fff;border-radius:16px;max-width:680px;width:100%;box-shadow:0 30px 70px rgba(0,0,0,.35);animation:pop .25s ease}
+  @keyframes pop{from{opacity:0;transform:scale(.97) translateY(10px)}to{opacity:1;transform:none}}
+  .modal .mhead{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+  .modal .mhead h2{margin:0}.modal .mhead p{margin:4px 0 0;font-size:13px;color:var(--muted)}
+  .modal .mbody{padding:24px 26px;max-height:62vh;overflow:auto}
+  .modal .mfoot{padding:18px 26px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+  .x{background:none;border:none;font-size:24px;line-height:1;color:var(--muted);cursor:pointer;padding:0}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:560px){.row2{grid-template-columns:1fr}}
+  .check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--text)}
+  .check input{margin-top:3px;width:18px;height:18px;flex:none}
+  .sigwrap{border:1px dashed var(--line);border-radius:10px;background:#fcfdff;position:relative}
+  canvas.sig{width:100%;height:150px;display:block;border-radius:10px;touch-action:none;cursor:crosshair}
+  .sigwrap .clear{position:absolute;top:8px;right:8px}
+  .sig-ph{position:absolute;left:14px;top:60px;color:#c2cad7;font-size:13px;pointer-events:none}
+  .agreement{border:1px solid var(--line);border-radius:10px;background:#fbfcfe;padding:16px 18px;max-height:230px;overflow:auto;font-size:13px;line-height:1.6;color:#33405a;margin-bottom:20px}
+  .agreement h4{margin:0 0 4px;font-size:14px;color:var(--navy)}
+  .agreement p{margin:0 0 10px}
+  .uploadbox{border:2px dashed #c8d2e0;border-radius:12px;background:#fbfcfe;padding:26px;text-align:center;cursor:pointer;transition:border .15s,background .15s}
+  .uploadbox:hover{border-color:var(--gold);background:#fff}
+  .uploadbox .big{font-size:34px;margin-bottom:6px}
+  .uploadbox b{color:var(--navy)}
+  .uploadbox .fname{margin-top:12px;font-size:14px;color:var(--good);font-weight:600;word-break:break-all}
+  .steps{background:#f1f5fb;border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:13.5px;color:#334}
+  .steps ol{margin:8px 0 0;padding-left:20px}.steps li{margin-bottom:5px}
+  .filechip{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text);margin-top:8px}
+  .congrats{text-align:center;padding:30px 24px 50px}
+  .congrats .seal{width:96px;height:96px;border-radius:50%;background:var(--good-bg);color:var(--good);display:flex;align-items:center;justify-content:center;font-size:48px;margin:0 auto 22px;animation:pop .4s ease}
+  .congrats h1{font-size:32px}
+  .summary{max-width:520px;margin:24px auto 0;text-align:left;background:#fbfcfe;border:1px solid var(--line);border-radius:12px;padding:18px 22px}
+  .summary div{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:14px;color:var(--text)}
+  .summary div span.c{color:var(--good);font-weight:800}
+  .footnote{color:var(--muted);font-size:12px;text-align:center;padding:24px 0 40px}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;padding:13px 22px;border-radius:10px;font-size:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:80;max-width:90%}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+  .toast.err{background:#b03333}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="logo"><div class="mark">TD</div><div>Top Drawer Cabinetry<small>New Hire Onboarding</small></div></div>
+    <div class="spacer"></div>
+    <div class="who" id="whoBox" style="display:none"></div>
+  </div>
+</header>
+
+<!-- SCREEN 1: WELCOME -->
+<section class="screen active" id="screen-welcome">
+  <div class="wrap">
+    <h1>Welcome to the team.</h1>
+    <p class="lead">Let's get your paperwork done before day one. First, tell us who you are and how you'll be working with us.</p>
+    <div class="card" style="padding:26px;max-width:520px;margin-bottom:34px">
+      <div class="row2">
+        <div class="field"><label class="fl">First name <span class="req">*</span></label><input type="text" id="w_first" autocomplete="given-name" /></div>
+        <div class="field"><label class="fl">Last name <span class="req">*</span></label><input type="text" id="w_last" autocomplete="family-name" /></div>
+      </div>
+      <div class="field" style="margin-bottom:0"><label class="fl">Email <span class="req">*</span></label><input type="email" id="w_email" autocomplete="email" placeholder="you@email.com" /><div class="hint">We'll use this to save your progress so you can finish later if needed.</div></div>
+    </div>
+    <h2 style="margin-bottom:4px">How are you joining us?</h2>
+    <p class="lead" style="margin-bottom:0">Select your employment type. This determines which documents you'll complete.</p>
+    <div class="roles">
+      <div class="role" onclick="chooseRole('w2')"><div class="ico">W2</div><h2>W-2 Employee</h2><p>You're a full-time or part-time employee on payroll, with taxes withheld.</p><div class="go">Start my paperwork →</div></div>
+      <div class="role" onclick="chooseRole('1099')"><div class="ico" style="font-size:17px">1099</div><h2>1099 Contractor</h2><p>You're an independent contractor or subcontractor invoicing for your work.</p><div class="go">Start my paperwork →</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCREEN 2: DASHBOARD -->
+<section class="screen" id="screen-dash">
+  <div class="wrap">
+    <button class="btn-link btn" onclick="goWelcome()" style="margin-bottom:10px">← Change employment type</button>
+    <h1 id="dashTitle">Your onboarding documents</h1>
+    <p class="lead" id="dashSub">Complete each document below. Some you fill out right here; others you download, sign, and upload back. Your progress saves automatically.</p>
+    <div class="pbadge" id="pCount"><b>0</b> of <b>0</b> complete</div>
+    <div class="bar"><i id="pFill"></i></div>
+    <div class="card" id="docList"></div>
+    <div style="margin-top:26px;text-align:right">
+      <button class="btn btn-gold" id="finishBtn" disabled onclick="finishOnboarding()">Complete all documents to finish</button>
+    </div>
+    <p class="footnote">Top Drawer Cabinetry · 3120 W Thomas Rd, Phoenix, AZ · Questions? Reach out to your hiring contact.</p>
+  </div>
+</section>
+
+<!-- SCREEN 3: CONGRATS -->
+<section class="screen" id="screen-done">
+  <div class="wrap">
+    <div class="card congrats">
+      <div class="seal">✓</div>
+      <h1>Congratulations!</h1>
+      <p class="lead" style="margin:0 auto;max-width:520px">You've submitted everything we need. We'll see you on your first day of employment. Welcome to Top Drawer Cabinetry.</p>
+      <div class="summary" id="doneSummary"></div>
+      <div style="margin-top:28px"><button class="btn btn-ghost" onclick="goDash()">← Back to my documents</button></div>
+    </div>
+    <p class="footnote">A copy of your completed documents has been sent to our HR team. No further action is needed.</p>
+  </div>
+</section>
+
+<!-- FORM MODAL -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="mhead"><div><h2 id="mTitle">Document</h2><p id="mDesc"></p></div><button class="x" onclick="closeModal()">&times;</button></div>
+    <div class="mbody" id="mBody"></div>
+    <div class="mfoot">
+      <button class="btn btn-ghost" id="blankBtn" onclick="downloadBlank()">⬇ Download blank copy</button>
+      <button class="btn btn-gold" id="saveBtn" onclick="submitDoc()">Save &amp; mark complete ✓</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   CONFIG — EDIT THIS SECTION
+   APPS_SCRIPT_URL: paste your Google Apps Script Web App URL.
+   Leave "" to test with no backend (nothing is stored).
+   ============================================================ */
+const APPS_SCRIPT_URL = ""; // <-- paste your Web App URL here
+
+/* Document modes:
+   "upload" = hire downloads the real blank (blankFile), fills/signs it
+              in their PDF app, and uploads the completed file back.
+   "fill"   = hire fills the form right here; a signed PDF is generated.
+   Optional per-doc keys: blankFile (download), readFile (read-only doc),
+   agreementText (shown above fields & included in the generated PDF).
+   Field types: text,email,tel,date,ssn,number,select(options),textarea,
+                checkbox, signature, file. req:true = required.            */
+const DOCUMENTS = {
+  w2: [
+    { id:"w4", mode:"upload", name:"Form W-4 — Federal Tax Withholding",
+      desc:"IRS form that sets your federal income tax withholding.",
+      blankFile:"w-4-federal.pdf",
+      steps:["Click <b>Download blank copy</b> below.","Open it and fill it out — it's fillable right in your PDF viewer or browser.","Sign &amp; date it, save the file, then upload the completed PDF here."] },
+
+    { id:"a4", mode:"upload", name:"Arizona Form A-4 — State Tax Withholding",
+      desc:"Arizona state income tax withholding election.",
+      blankFile:"az-a-4.pdf",
+      steps:["Download the blank A-4.","Choose your withholding percentage, then sign &amp; date.","Upload the completed PDF here."] },
+
+    { id:"i9", mode:"upload", name:"Form I-9 — Employment Eligibility",
+      desc:"Federal form verifying your identity and authorization to work in the U.S.",
+      blankFile:"i-9.pdf",
+      note:"On your first day, bring acceptable ID (e.g., passport, OR driver's license + Social Security card). See the form's List A/B/C.",
+      steps:["Download the blank I-9.","Complete <b>Section 1</b> (the employee section) and sign.","Upload the completed PDF here. We'll verify your ID documents in person on day one."] },
+
+    { id:"ach", mode:"fill", name:"Direct Deposit (ACH) Authorization",
+      desc:"Where your paycheck will be deposited.",
+      blankFile:"ach-direct-deposit.pdf",
+      fields:[
+        {k:"payee_name",label:"Payee name (your full name)",type:"text",req:true},
+        {k:"business_name",label:"Business name (if applicable)",type:"text"},
+        {k:"email",label:"Email address",type:"email",req:true},
+        {k:"phone",label:"Phone number",type:"tel",req:true},
+        {k:"mailing_address",label:"Mailing address",type:"text",req:true},
+        {k:"bank",label:"Bank name",type:"text",req:true},
+        {k:"routing",label:"Routing number",type:"number",req:true},
+        {k:"account",label:"Account number",type:"number",req:true},
+        {k:"acct_type",label:"Account type",type:"select",req:true,options:["Checking","Savings"]},
+        {k:"voided_check",label:"Attach a voided check or bank letter (recommended)",type:"file"},
+        {k:"certify",label:"I certify I am an authorized signer on this account and authorize Top Drawer Cabinetry AZ LLC to initiate ACH credits (and debits for adjustments) to it.",type:"checkbox",req:true},
+        {k:"printed_name",label:"Printed name",type:"text",req:true},
+        {k:"title",label:"Title (if business)",type:"text"},
+        {k:"sig",label:"Signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]},
+
+    { id:"emprec", mode:"fill", name:"Employee Record",
+      desc:"Your basic info, EEO data, and emergency contacts.",
+      blankFile:"employment-record.pdf",
+      fields:[
+        {k:"emp_name",label:"Employee name",type:"text",req:true},
+        {k:"address",label:"Home address",type:"text",req:true},
+        {k:"phone",label:"Phone number",type:"tel",req:true},
+        {k:"ssn",label:"Social Security Number",type:"ssn",req:true},
+        {k:"dob",label:"Date of birth",type:"date",req:true},
+        {k:"start_date",label:"Employee start date",type:"date",req:true},
+        {k:"title",label:"Title / position",type:"text",req:true},
+        {k:"_eeo",label:"EEO data (voluntary — used for federal reporting only)",type:"heading"},
+        {k:"sex",label:"Sex",type:"select",options:["Male","Female","Non-binary","Prefer not to answer"]},
+        {k:"race",label:"Race / ethnicity",type:"select",options:["White","Black","Hispanic/Latino","Asian or Pacific Islander","American Indian or Alaskan Native","Two or more races (Non-Hispanic/Non-Latino)","Prefer not to answer"]},
+        {k:"_ec",label:"In case of emergency, please notify",type:"heading"},
+        {k:"ec1_name",label:"Emergency contact #1 — name",type:"text",req:true},
+        {k:"ec1_phone",label:"Emergency contact #1 — phone",type:"tel",req:true},
+        {k:"ec1_rel",label:"Emergency contact #1 — relationship",type:"text",req:true},
+        {k:"ec2_name",label:"Emergency contact #2 — name",type:"text"},
+        {k:"ec2_phone",label:"Emergency contact #2 — phone",type:"tel"},
+        {k:"ec2_rel",label:"Emergency contact #2 — relationship",type:"text"},
+        {k:"sig",label:"Employee signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]},
+
+    { id:"confidentiality", mode:"fill", name:"Confidentiality Agreement",
+      desc:"Top Drawer Cabinetry confidentiality & work-product agreement.",
+      blankFile:"confidentiality-agreement.pdf",
+      agreementText:
+        "This agreement is between Top Drawer Cabinetry, LLC (\"Company\") and the Employee named below. Effective on the Employee's first day of employment.\n\n"+
+        "1. Confidential Information. \"Confidential Information\" means any non-public information about the Company, including financials, pricing, margins, vendor terms, customer lists and contact info, inventory data, product information, internal processes, reports, login credentials, system access, and any other information a reasonable person would consider private to the business. Employee agrees to use Confidential Information only for work for the Company, not share it outside the Company without written permission, and take reasonable care to keep it secure. These obligations continue after employment ends.\n\n"+
+        "2. Work Product Belongs to the Company. Any work Employee creates as part of their job (\"Work Product\") — spreadsheets, reports, dashboards, SOPs, checklists, procedures, forecasts, financial models, or any materials created using Company time, systems, or information — belongs to the Company, which owns all rights to it even after Employee leaves. Employee agrees to cooperate (at the Company's expense) in confirming such ownership.\n\n"+
+        "3. Return of Company Property. When employment ends (or any time if asked), Employee will return all Company property (laptop, keys, documents, etc.), return or delete all Company files and information from personal devices, email, or storage, and not keep copies.\n\n"+
+        "4. No Change to At-Will Status. Nothing here changes the fact that employment with Top Drawer Cabinetry is at-will. Either party may end the relationship at any time, with or without cause or notice, subject to applicable law.",
+      fields:[
+        {k:"employee_name",label:"Employee name (as it should appear on the agreement)",type:"text",req:true},
+        {k:"agree",label:"I have read and agree to the Confidentiality Agreement above.",type:"checkbox",req:true},
+        {k:"sig",label:"Employee signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]},
+
+    { id:"handbook", mode:"fill", name:"2026 Employee Handbook — Acknowledgment",
+      desc:"Read the handbook, then confirm receipt.",
+      readFile:"employee-handbook-2026.pdf",
+      agreementText:"I acknowledge that I have received, read, and understand the Top Drawer Cabinetry 2026 Employee Handbook, and I agree to abide by the policies described in it. I understand the Handbook is not a contract of employment and that my employment remains at-will.",
+      fields:[
+        {k:"printed_name",label:"Printed name",type:"text",req:true},
+        {k:"ack",label:"I have received, read, and understand the 2026 Employee Handbook and agree to follow its policies.",type:"checkbox",req:true},
+        {k:"sig",label:"Employee signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]}
+  ],
+
+  "1099": [
+    { id:"ica", mode:"fill", name:"Independent Contractor Agreement",
+      desc:"Terms of your contractor relationship with Top Drawer Cabinetry AZ LLC.",
+      blankFile:"independent-contractor-agreement.pdf",
+      agreementText:
+        "This Agreement is made between Top Drawer Cabinetry AZ LLC (\"Company\") and the Contractor named below.\n\n"+
+        "1. Scope of Work. Contractor agrees to perform cabinet assembly and related tasks (\"Work\") on a project or per-box basis, and is responsible for providing their own tools, equipment, and materials.\n\n"+
+        "2. Independent Contractor Status. Contractor is an independent contractor, not an employee. Contractor controls how, when, and where the Work is performed; is free to perform services for others; is responsible for all federal, state, and local taxes, insurance, and licenses; and is not entitled to overtime, workers' compensation, unemployment, or employee benefits.\n\n"+
+        "3. Payment. Company pays based on completed boxes or the agreed rate shown on Contractor's weekly invoice. No payment is owed for incomplete, damaged, or rejected work.\n\n"+
+        "4. Invoicing. Contractor will submit an invoice listing the number of units completed, the agreed rate per unit, and the total due. Payment is made within 14 days of receipt of invoice.\n\n"+
+        "5. Liability for Work. Contractor is financially responsible for errors, damages, or losses caused by defective workmanship, and will repair or replace damaged materials at their own cost.\n\n"+
+        "6. Insurance & Indemnity. Contractor shall maintain personal liability or business insurance and agrees to hold Company harmless from any claims, damages, or tax liabilities arising from Contractor's work or classification.\n\n"+
+        "7. Termination. Either party may end this Agreement at any time, for any reason, by written notice. Contractor is paid for all properly completed Work up to the termination date.\n\n"+
+        "8. Entire Agreement. This document represents the full understanding between the parties and overrides all prior discussions. Any changes must be in writing and signed by both parties.",
+      fields:[
+        {k:"contractor_name",label:"Contractor name / business name",type:"text",req:true},
+        {k:"agree",label:"I have read and agree to the Independent Contractor Agreement above.",type:"checkbox",req:true},
+        {k:"sig",label:"Contractor signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]},
+
+    { id:"wc", mode:"upload", name:"Workers' Compensation Policy",
+      desc:"Upload your current workers' comp policy or certificate of insurance (COI).",
+      note:"As an independent contractor you carry your own coverage. Upload proof your policy is active — ideally listing Top Drawer Cabinetry AZ LLC as a certificate holder. If you carry a sole-proprietor waiver, upload that instead.",
+      steps:["Locate your workers' comp policy declarations page or COI (a PDF or photo is fine).","Make sure it shows the policy number and effective dates.","Upload it here."] },
+
+    { id:"ach", mode:"fill", name:"Payment / ACH Authorization",
+      desc:"Where to send your contractor payments.",
+      blankFile:"ach-direct-deposit.pdf",
+      fields:[
+        {k:"payee_name",label:"Payee name",type:"text",req:true},
+        {k:"business_name",label:"Business name (if applicable)",type:"text"},
+        {k:"email",label:"Email address",type:"email",req:true},
+        {k:"phone",label:"Phone number",type:"tel",req:true},
+        {k:"mailing_address",label:"Mailing address",type:"text",req:true},
+        {k:"bank",label:"Bank name",type:"text",req:true},
+        {k:"routing",label:"Routing number",type:"number",req:true},
+        {k:"account",label:"Account number",type:"number",req:true},
+        {k:"acct_type",label:"Account type",type:"select",req:true,options:["Checking","Savings"]},
+        {k:"voided_check",label:"Attach a voided check or bank letter (recommended)",type:"file"},
+        {k:"certify",label:"I certify I am an authorized signer on this account and authorize Top Drawer Cabinetry AZ LLC to initiate ACH payments to it.",type:"checkbox",req:true},
+        {k:"printed_name",label:"Printed name",type:"text",req:true},
+        {k:"title",label:"Title (if business)",type:"text"},
+        {k:"sig",label:"Signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]},
+
+    { id:"emprec", mode:"fill", name:"Contractor Record",
+      desc:"Your basic info and emergency contacts on file.",
+      blankFile:"employment-record.pdf",
+      fields:[
+        {k:"emp_name",label:"Full name / business name",type:"text",req:true},
+        {k:"address",label:"Address",type:"text",req:true},
+        {k:"phone",label:"Phone number",type:"tel",req:true},
+        {k:"ssn",label:"SSN or EIN (Taxpayer ID)",type:"text",req:true},
+        {k:"start_date",label:"Start date",type:"date",req:true},
+        {k:"title",label:"Trade / role",type:"text",req:true},
+        {k:"_ec",label:"In case of emergency, please notify",type:"heading"},
+        {k:"ec1_name",label:"Emergency contact #1 — name",type:"text",req:true},
+        {k:"ec1_phone",label:"Emergency contact #1 — phone",type:"tel",req:true},
+        {k:"ec1_rel",label:"Emergency contact #1 — relationship",type:"text",req:true},
+        {k:"ec2_name",label:"Emergency contact #2 — name",type:"text"},
+        {k:"ec2_phone",label:"Emergency contact #2 — phone",type:"tel"},
+        {k:"ec2_rel",label:"Emergency contact #2 — relationship",type:"text"},
+        {k:"sig",label:"Signature",type:"signature",req:true},
+        {k:"date",label:"Date",type:"date",req:true}
+      ]}
+  ]
+};
+/* ===================== END CONFIG ===================== */
+
+let state = { role:null, first:"", last:"", email:"", docs:{} };
+let currentDoc = null;
+let pendingFiles = {}; // field key -> File (for fill-mode file fields)
+
+function storeKey(){ return "tdc_onboard_"+(state.email||"anon").toLowerCase(); }
+function save(){ try{ localStorage.setItem(storeKey(), JSON.stringify(state)); }catch(e){} }
+function load(email){ try{ const r=localStorage.getItem("tdc_onboard_"+email.toLowerCase()); if(r){ state=JSON.parse(r); return true; } }catch(e){} return false; }
+
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo({top:0,behavior:'smooth'}); }
+function goWelcome(){ show('screen-welcome'); }
+function goDash(){ renderDash(); show('screen-dash'); }
+function updateWho(){ const box=document.getElementById('whoBox'); if(state.first){ box.style.display='block'; box.innerHTML='<b>'+esc(state.first+' '+state.last)+'</b>'+(state.role?(state.role==='w2'?'W-2 Employee':'1099 Contractor'):''); } else box.style.display='none'; }
+
+function chooseRole(role){
+  const first=val('w_first'),last=val('w_last'),email=val('w_email');
+  if(!first||!last||!email){ toast('Please fill in your name and email first.','err'); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ toast('Please enter a valid email address.','err'); return; }
+  if(load(email)){ /* resume */ } else { state={role,first,last,email,docs:{}}; }
+  state.role=role; state.email=email; state.first=first; state.last=last; if(!state.docs) state.docs={};
+  save(); updateWho(); goDash();
+}
+
+function renderDash(){
+  const list=DOCUMENTS[state.role]||[];
+  document.getElementById('dashTitle').textContent = state.role==='w2'?'W-2 Employee documents':'1099 Contractor documents';
+  const elist=document.getElementById('docList'); elist.innerHTML=''; let done=0;
+  list.forEach(doc=>{
+    const isDone=!!(state.docs[doc.id]&&state.docs[doc.id].complete); if(isDone) done++;
+    const verb = isDone?'Review / edit' : (doc.mode==='upload'?'Download &amp; upload':'Fill out');
+    const row=document.createElement('div'); row.className='doc'+(isDone?' done':'');
+    row.innerHTML='<div class="status">'+(isDone?'✓':'')+'</div>'+
+      '<div class="meta"><h3>'+esc(doc.name)+'<span class="tag">'+(isDone?'Complete':'Required')+'</span></h3><p>'+esc(doc.desc)+'</p></div>'+
+      '<div class="actions"><button class="btn btn-primary" onclick="openDoc(\''+doc.id+'\')">'+verb+'</button></div>';
+    elist.appendChild(row);
+  });
+  const total=list.length;
+  document.getElementById('pCount').innerHTML='<b>'+done+'</b> of <b>'+total+'</b> complete';
+  document.getElementById('pFill').style.width=total?(done/total*100)+'%':'0%';
+  const fin=document.getElementById('finishBtn'); const all=(total>0&&done===total);
+  fin.disabled=!all; fin.textContent=all?'Submit & finish ✓':'Complete all documents to finish';
+}
+
+function openDoc(id){
+  const doc=(DOCUMENTS[state.role]||[]).find(d=>d.id===id); if(!doc) return;
+  currentDoc=doc; pendingFiles={};
+  document.getElementById('mTitle').textContent=doc.name;
+  document.getElementById('mDesc').textContent=doc.desc;
+  document.getElementById('blankBtn').style.display=(doc.blankFile||doc.readFile)?'inline-flex':'none';
+  document.getElementById('blankBtn').textContent = doc.readFile?'⬇ Read the document':'⬇ Download blank copy';
+  const body=document.getElementById('mBody'); body.innerHTML='';
+  const saved=(state.docs[id]&&state.docs[id].data)||{};
+
+  if(doc.note){ const n=document.createElement('div'); n.className='steps'; n.innerHTML='<b>Heads up:</b> '+doc.note; body.appendChild(n); }
+  if(doc.agreementText){ const a=document.createElement('div'); a.className='agreement'; a.innerHTML=doc.agreementText.split('\n\n').map(p=>'<p>'+esc(p)+'</p>').join(''); body.appendChild(a); }
+
+  if(doc.mode==='upload'){
+    if(doc.steps){ const s=document.createElement('div'); s.className='steps'; s.innerHTML='<b>How to complete this form:</b><ol>'+doc.steps.map(x=>'<li>'+x+'</li>').join('')+'</ol>'; body.appendChild(s); }
+    const prior=state.docs[id]&&state.docs[id].filename;
+    const box=document.createElement('div');
+    box.innerHTML='<label class="fl">Upload your completed file <span class="req">*</span></label>'+
+      '<div class="uploadbox" onclick="document.getElementById(\'upInput\').click()"><div class="big">📄⬆️</div><b>Click to choose your completed PDF</b><div class="hint" style="margin-top:6px">PDF, JPG, or PNG · or drag a file here</div><div class="fname" id="upName">'+(prior?('Previously uploaded: '+esc(prior)):'')+'</div></div>'+
+      '<input type="file" id="upInput" accept="application/pdf,image/*" style="display:none" onchange="onUpPick(this)"/>';
+    body.appendChild(box);
+    const dz=box.querySelector('.uploadbox');
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#c9933d';});
+    dz.addEventListener('drop',e=>{e.preventDefault();const inp=document.getElementById('upInput');inp.files=e.dataTransfer.files;onUpPick(inp);});
+  } else {
+    doc.fields.forEach(f=>{ body.appendChild(renderField(f,saved[f.k])); });
+    body.querySelectorAll('canvas.sig').forEach(initSig);
+  }
+  document.getElementById('modalBg').classList.add('open');
+}
+function onUpPick(inp){ const f=inp.files[0]; if(f) document.getElementById('upName').textContent='Selected: '+f.name; }
+function closeModal(){ document.getElementById('modalBg').classList.remove('open'); currentDoc=null; pendingFiles={}; }
+
+function renderField(f,value){
+  if(f.type==='heading'){ const h=document.createElement('div'); h.style.cssText='margin:22px 0 10px;font-weight:700;color:#16223a;font-size:14px;border-top:1px solid #eef1f6;padding-top:16px'; h.textContent=f.label; return h; }
+  const wrap=document.createElement('div'); wrap.className='field'; wrap.dataset.k=f.k; wrap.dataset.type=f.type;
+  const reqStar=f.req?' <span class="req">*</span>':'';
+  if(f.type==='checkbox'){ wrap.innerHTML='<label class="check"><input type="checkbox" '+(value?'checked':'')+'/> <span>'+esc(f.label)+reqStar+'</span></label>'; return wrap; }
+  if(f.type==='file'){ wrap.innerHTML='<label class="fl">'+esc(f.label)+reqStar+'</label><input type="file" accept="application/pdf,image/*" onchange="onFieldFile(this,\''+f.k+'\')"/><div class="filechip" id="fc_'+f.k+'"></div>'; return wrap; }
+  if(f.type==='signature'){ wrap.innerHTML='<label class="fl">'+esc(f.label)+reqStar+'</label><div class="sigwrap"><canvas class="sig" data-val="'+(value?encodeURIComponent(value):'')+'"></canvas><button type="button" class="btn btn-ghost clear" onclick="clearSig(this)">Clear</button><div class="sig-ph">Sign here with your mouse or finger</div></div>'; return wrap; }
+  let inner='<label class="fl">'+esc(f.label)+reqStar+'</label>';
+  if(f.type==='select'){ inner+='<select><option value="">— Select —</option>'+f.options.map(o=>'<option '+(value===o?'selected':'')+'>'+esc(o)+'</option>').join('')+'</select>'; }
+  else if(f.type==='textarea'){ inner+='<textarea>'+esc(value||'')+'</textarea>'; }
+  else if(f.type==='ssn'){ inner+='<input type="text" inputmode="numeric" placeholder="XXX-XX-XXXX" value="'+esc(value||'')+'"/>'; }
+  else { const t=(f.type==='email'||f.type==='tel'||f.type==='date'||f.type==='number')?f.type:'text'; inner+='<input type="'+t+'" value="'+esc(value||'')+'"/>'; }
+  wrap.innerHTML=inner; return wrap;
+}
+function onFieldFile(inp,k){ const f=inp.files[0]; if(f){ pendingFiles[k]=f; document.getElementById('fc_'+k).textContent='📎 '+f.name; } }
+
+/* signature pad */
+function initSig(canvas){
+  const ratio=window.devicePixelRatio||1; const rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width*ratio; canvas.height=150*ratio;
+  const ctx=canvas.getContext('2d'); ctx.scale(ratio,ratio); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.strokeStyle='#16223a';
+  let drawing=false,last=null,dirty=false;
+  const dv=canvas.getAttribute('data-val');
+  if(dv){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,rect.width,150); img.src=decodeURIComponent(dv); dirty=true; hidePh(canvas); }
+  function pos(e){ const r=canvas.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return {x:p.clientX-r.left,y:p.clientY-r.top}; }
+  function start(e){ e.preventDefault(); drawing=true; last=pos(e); dirty=true; hidePh(canvas); }
+  function move(e){ if(!drawing)return; e.preventDefault(); const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }
+  function end(){ drawing=false; if(dirty) canvas.setAttribute('data-val',encodeURIComponent(canvas.toDataURL('image/png'))); }
+  canvas.addEventListener('mousedown',start); canvas.addEventListener('mousemove',move); window.addEventListener('mouseup',end);
+  canvas.addEventListener('touchstart',start,{passive:false}); canvas.addEventListener('touchmove',move,{passive:false}); canvas.addEventListener('touchend',end);
+}
+function hidePh(c){ const ph=c.parentElement.querySelector('.sig-ph'); if(ph) ph.style.display='none'; }
+function clearSig(btn){ const c=btn.parentElement.querySelector('canvas.sig'); c.getContext('2d').clearRect(0,0,c.width,c.height); c.setAttribute('data-val',''); const ph=c.parentElement.querySelector('.sig-ph'); if(ph) ph.style.display='block'; }
+
+function collect(){
+  const data={}; let missing=null;
+  document.querySelectorAll('#mBody .field').forEach(w=>{
+    const k=w.dataset.k,type=w.dataset.type; const f=currentDoc.fields.find(x=>x.k===k); let v='';
+    if(type==='checkbox') v=w.querySelector('input').checked;
+    else if(type==='file') v=pendingFiles[k]?pendingFiles[k].name:'';
+    else if(type==='signature') v=decodeURIComponent(w.querySelector('canvas.sig').getAttribute('data-val')||'');
+    else if(type==='select') v=w.querySelector('select').value;
+    else if(type==='textarea') v=w.querySelector('textarea').value.trim();
+    else v=w.querySelector('input').value.trim();
+    data[k]=v;
+    if(f&&f.req&&!missing){ if(type==='checkbox'&&v!==true) missing=f.label; else if(type!=='checkbox'&&(!v||v==='')) missing=f.label; }
+  });
+  return {data,missing};
+}
+
+async function submitDoc(){
+  const doc=currentDoc; if(!doc) return;
+  const btn=document.getElementById('saveBtn'); btn.disabled=true;
+  try{
+    if(doc.mode==='upload'){
+      const inp=document.getElementById('upInput'); const file=inp.files[0];
+      const already=state.docs[doc.id]&&state.docs[doc.id].complete;
+      if(!file && !already){ toast('Please choose your completed file to upload.','err'); return; }
+      if(file){
+        const b64=await fileToB64(file);
+        const fname=cleanName(doc);
+        const ext=(file.name.split('.').pop()||'pdf').toLowerCase();
+        await sendFiles(doc,[{base64:b64,filename:fname+'.'+ext,contentType:file.type||'application/pdf'}],{uploaded:file.name});
+        state.docs[doc.id]={complete:true,filename:file.name,completedAt:new Date().toISOString()};
+      }
+    } else {
+      const {data,missing}=collect();
+      if(missing){ toast('Please complete: '+missing,'err'); return; }
+      const files=[];
+      // attach any file-type fields
+      for(const k in pendingFiles){ const f=pendingFiles[k]; const b64=await fileToB64(f); const ext=(f.name.split('.').pop()||'pdf'); files.push({base64:b64,filename:cleanName(doc)+'_attachment_'+k+'.'+ext,contentType:f.type||'application/octet-stream'}); }
+      // generated signed PDF
+      let pdfB64=''; try{ pdfB64=buildPdf(doc,data).output('datauristring').split(',')[1]; }catch(e){ console.warn(e); }
+      if(pdfB64) files.unshift({base64:pdfB64,filename:cleanName(doc)+'.pdf',contentType:'application/pdf'});
+      await sendFiles(doc,files,{fields:data});
+      state.docs[doc.id]={complete:true,data:data,completedAt:new Date().toISOString()};
+    }
+    save(); closeModal(); renderDash(); toast('“'+doc.name+'” saved ✓');
+  } finally { btn.disabled=false; }
+}
+
+function cleanName(doc){ return state.last+'_'+state.first+'_'+slug(doc.name); }
+function fileToB64(file){ return new Promise((res,rej)=>{ const r=new FileReader(); r.onload=()=>res(String(r.result).split(',')[1]); r.onerror=rej; r.readAsDataURL(file); }); }
+
+function buildPdf(doc,data){
+  const {jsPDF}=window.jspdf; const pdf=new jsPDF({unit:'pt',format:'letter'}); const W=612,M=54; let y=64;
+  pdf.setFillColor(22,34,58); pdf.rect(0,0,W,46,'F');
+  pdf.setTextColor(227,178,90); pdf.setFont('helvetica','bold'); pdf.setFontSize(13); pdf.text('TOP DRAWER CABINETRY',M,28);
+  pdf.setTextColor(255,255,255); pdf.setFont('helvetica','normal'); pdf.setFontSize(9); pdf.text('New Hire Onboarding',W-M,28,{align:'right'});
+  pdf.setTextColor(28,38,56); pdf.setFont('helvetica','bold'); pdf.setFontSize(16); pdf.text(doc.name,M,y); y+=8;
+  pdf.setDrawColor(201,147,61); pdf.setLineWidth(1.5); pdf.line(M,y,W-M,y); y+=24;
+  pdf.setFontSize(10); pdf.setTextColor(90,100,118); pdf.setFont('helvetica','normal');
+  pdf.text('Employee: '+state.first+' '+state.last+'    Email: '+state.email,M,y); y+=14;
+  pdf.text('Submitted: '+new Date().toLocaleString(),M,y); y+=22;
+  if(doc.agreementText){ pdf.setFontSize(9); pdf.setTextColor(70,80,98); const para=doc.agreementText.split('\n\n'); para.forEach(p=>{ const lines=pdf.splitTextToSize(p,W-2*M); if(y+lines.length*11>740){pdf.addPage();y=64;} pdf.text(lines,M,y); y+=lines.length*11+8; }); y+=6; pdf.setDrawColor(225,229,236); pdf.line(M,y,W-M,y); y+=20; }
+  doc.fields.forEach(f=>{
+    if(f.type==='heading'){ if(y>720){pdf.addPage();y=64;} pdf.setFont('helvetica','bold'); pdf.setTextColor(22,34,58); pdf.setFontSize(11); pdf.text(f.label,M,y); y+=18; return; }
+    if(y>720){pdf.addPage();y=64;}
+    pdf.setFont('helvetica','bold'); pdf.setTextColor(28,38,56); pdf.setFontSize(10);
+    if(f.type==='signature'){ pdf.text('Signature:',M,y); y+=6; const v=data[f.k]; if(v){ try{ pdf.addImage(v,'PNG',M,y,170,52);}catch(e){} } pdf.setDrawColor(200,206,216); pdf.line(M,y+56,M+220,y+56); y+=72; }
+    else { pdf.text(f.label.length>80?f.label.slice(0,80)+'…':f.label,M,y); y+=14; pdf.setFont('helvetica','normal'); pdf.setTextColor(50,60,78); let v=data[f.k]; if(f.type==='checkbox') v=v?'Yes — acknowledged & agreed':'No'; const lines=pdf.splitTextToSize(String(v||'—'),W-2*M); pdf.text(lines,M,y); y+=lines.length*13+12; }
+  });
+  pdf.setFontSize(8); pdf.setTextColor(150,158,172); pdf.text('Generated via Top Drawer Cabinetry onboarding portal — '+new Date().toISOString(),M,770);
+  return pdf;
+}
+
+function downloadBlank(){ const d=currentDoc; if(!d) return; if(d.blankFile) window.open(d.blankFile,'_blank'); else if(d.readFile) window.open(d.readFile,'_blank'); }
+
+async function sendFiles(doc,files,extra){
+  const payload=Object.assign({ type:'document', employee:state.first+' '+state.last, email:state.email, role:state.role, docId:doc.id, docName:doc.name, files:files, submittedAt:new Date().toISOString() },extra||{});
+  if(!APPS_SCRIPT_URL){ console.log('[demo] no backend — would upload:',files.map(f=>f.filename)); return; }
+  try{ await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}); }catch(e){ console.warn('upload failed',e); }
+}
+
+async function finishOnboarding(){
+  const list=DOCUMENTS[state.role]||[]; const sum=document.getElementById('doneSummary'); sum.innerHTML='';
+  list.forEach(d=>{ const row=document.createElement('div'); row.innerHTML='<span class="c">✓</span> '+esc(d.name); sum.appendChild(row); });
+  const payload={ type:'completion', employee:state.first+' '+state.last, email:state.email, role:state.role, documents:list.map(d=>d.name), completedAt:new Date().toISOString() };
+  if(APPS_SCRIPT_URL){ try{ await fetch(APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});}catch(e){} }
+  state.finished=true; save(); show('screen-done');
+}
+
+function val(id){ return document.getElementById(id).value.trim(); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+function slug(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,''); }
+let toastT; function toast(msg,type){ const t=document.getElementById('toast'); t.textContent=msg; t.className='toast show'+(type==='err'?' err':''); clearTimeout(toastT); toastT=setTimeout(()=>t.className='toast'+(type==='err'?' err':''),3400); }
+document.getElementById('modalBg').addEventListener('click',e=>{ if(e.target.id==='modalBg') closeModal(); });
+</script>
+</body>
+</html>
