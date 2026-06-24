@@ -427,9 +427,10 @@ function openDoc(id){
     dz.addEventListener('drop',e=>{e.preventDefault();const inp=document.getElementById('upInput');inp.files=e.dataTransfer.files;onUpPick(inp);});
   } else {
     doc.fields.forEach(f=>{ body.appendChild(renderField(f,saved[f.k])); });
-    body.querySelectorAll('canvas.sig').forEach(initSig);
   }
   document.getElementById('modalBg').classList.add('open');
+  // size/init signature pads AFTER the modal is visible (so widths are known)
+  requestAnimationFrame(()=>{ document.querySelectorAll('#mBody canvas.sig').forEach(initSig); });
 }
 function onUpPick(inp){ const f=inp.files[0]; if(f) document.getElementById('upName').textContent='Selected: '+f.name; }
 function closeModal(){ document.getElementById('modalBg').classList.remove('open'); currentDoc=null; pendingFiles={}; }
@@ -453,11 +454,12 @@ function onFieldFile(inp,k){ const f=inp.files[0]; if(f){ pendingFiles[k]=f; doc
 /* signature pad */
 function initSig(canvas){
   const ratio=window.devicePixelRatio||1; const rect=canvas.getBoundingClientRect();
-  canvas.width=rect.width*ratio; canvas.height=150*ratio;
+  const cssW=rect.width||(canvas.parentElement&&canvas.parentElement.clientWidth)||500;
+  canvas.width=cssW*ratio; canvas.height=150*ratio;
   const ctx=canvas.getContext('2d'); ctx.scale(ratio,ratio); ctx.lineWidth=2.2; ctx.lineCap='round'; ctx.strokeStyle='#16223a';
   let drawing=false,last=null,dirty=false;
   const dv=canvas.getAttribute('data-val');
-  if(dv){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,rect.width,150); img.src=decodeURIComponent(dv); dirty=true; hidePh(canvas); }
+  if(dv){ const img=new Image(); img.onload=()=>ctx.drawImage(img,0,0,cssW,150); img.src=decodeURIComponent(dv); dirty=true; hidePh(canvas); }
   function pos(e){ const r=canvas.getBoundingClientRect(); const p=e.touches?e.touches[0]:e; return {x:p.clientX-r.left,y:p.clientY-r.top}; }
   function start(e){ e.preventDefault(); drawing=true; last=pos(e); dirty=true; hidePh(canvas); }
   function move(e){ if(!drawing)return; e.preventDefault(); const p=pos(e); ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; }
