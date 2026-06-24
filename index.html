@@ -423,7 +423,7 @@ function openDoc(id){
       '<input type="file" id="upInput" accept="application/pdf,image/*" style="display:none" onchange="onUpPick(this)"/>';
     body.appendChild(box);
     const dz=box.querySelector('.uploadbox');
-    dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#c9933d';});
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='#c8102e';});
     dz.addEventListener('drop',e=>{e.preventDefault();const inp=document.getElementById('upInput');inp.files=e.dataTransfer.files;onUpPick(inp);});
   } else {
     doc.fields.forEach(f=>{ body.appendChild(renderField(f,saved[f.k])); });
